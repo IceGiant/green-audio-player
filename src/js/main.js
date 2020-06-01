@@ -219,7 +219,20 @@ class GreenAudioPlayer {
         this.player.addEventListener('volumechange', this.updateVolume.bind(self));
         this.player.volume = 0.81;
         this.player.addEventListener('loadedmetadata', () => {
-            self.totalTime.textContent = GreenAudioPlayer.formatTime(self.player.duration);
+            // eslint-disable-next-line no-console
+            self.offsetT = self.player.currentTime;
+
+            const uri = this.player.currentSrc;
+            const a = uri.slice(uri.lastIndexOf(',') + 1).split(':');
+            if (uri.lastIndexOf(',') > 0) {
+                self.playbackEndT = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+            } else {
+                self.playbackEndT = self.player.duration;
+            }
+
+            self.currentTime.textContent = self.formatTime(self.player.currentTime - self.offsetT);
+            // eslint-disable-next-line max-len
+            self.totalTime.textContent = self.formatTime(self.playbackEndT);
         });
         this.player.addEventListener('seeking', this.showLoadingIndicator.bind(self));
         this.player.addEventListener('seeked', this.hideLoadingIndicator.bind(self));
