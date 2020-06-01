@@ -30,6 +30,9 @@ class GreenAudioPlayer {
         this.enableKeystrokes = opts.enableKeystrokes || false;
         this.showTooltips = opts.showTooltips || false;
 
+        this.offsetT = 0;
+        this.playbackEndT = undefined;
+
         const self = this;
 
         this.labels = {
