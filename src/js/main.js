@@ -237,12 +237,8 @@ class GreenAudioPlayer {
         this.player.addEventListener('seeking', this.showLoadingIndicator.bind(self));
         this.player.addEventListener('seeked', this.hideLoadingIndicator.bind(self));
         this.player.addEventListener('canplay', this.hideLoadingIndicator.bind(self));
-        this.player.addEventListener('ended', () => {
-            GreenAudioPlayer.pausePlayer(self.player, 'ended');
-            self.player.currentTime = 0;
-            self.playPauseBtn.setAttribute('aria-label', self.labels.play);
-            self.hasSetAttribute(self.playPauseBtn, 'title', self.labels.play);
-        });
+
+        this.player.addEventListener('ended', this.playbackEnded.bind(self));
 
         this.volumeBtn.addEventListener('click', this.showHideVolume.bind(self));
         window.addEventListener('resize', self.directionAware.bind(self));
@@ -254,6 +250,14 @@ class GreenAudioPlayer {
         }
 
         this.downloadLink.addEventListener('click', this.downloadAudio.bind(self));
+    }
+
+    playbackEnded() {
+        GreenAudioPlayer.pausePlayer(this.player, 'ended');
+        this.player.currentTime = this.offsetT;
+        this.updateProgress();
+        this.playPauseBtn.setAttribute('aria-label', this.labels.play);
+        this.hasSetAttribute(this.playPauseBtn, 'title', this.labels.play);
     }
 
     overcomeIosLimitations() {
