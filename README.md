@@ -1,9 +1,6 @@
 # Green Audio Player
 
-![npm](https://img.shields.io/npm/v/green-audio-player.svg)
-![GitHub](https://img.shields.io/github/license/greghub/green-audio-player.svg)
-![GitHub file size in bytes](https://img.shields.io/github/size/greghub/green-audio-player/dist/js/green-audio-player.min.js.svg)
-![GitHub last commit](https://img.shields.io/github/last-commit/greghub/green-audio-player.svg)
+This is a fork of the original (original readme below this blurb).  My changes to this dd support for handling audio fragments of a larger file so it's possible to use relative start/end times, eg: a src of "https://mp3s.nashownotes.com/NA-1152-2019-07-04-Final.mp3#t=01:20:35,01:22:18" on an audio element using this player will show total playback of 1:43, based on the relative start and end times defined in that src url.
 
 
 Based on a [pen](https://codepen.io/gregh/pen/NdVvbm) I've created 2 years ago.
