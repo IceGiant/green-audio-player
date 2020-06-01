@@ -308,12 +308,16 @@ class GreenAudioPlayer {
     }
 
     updateProgress() {
-        const current = this.player.currentTime;
-        const percent = (current / this.player.duration) * 100;
+        const currentT = this.player.currentTime;
+        const currentPosition = this.player.currentTime - this.offsetT;
+        const percent = (currentPosition / (this.playbackEndT - this.offsetT)) * 100;
         this.progress.setAttribute('aria-valuenow', percent);
         this.progress.style.width = `${percent}%`;
 
-        this.currentTime.textContent = GreenAudioPlayer.formatTime(current);
+        this.currentTime.textContent = this.formatTime(currentT);
+        if (percent >= 100) {
+            this.playbackEnded();
+        }
     }
 
     updateVolume() {
@@ -368,7 +372,10 @@ class GreenAudioPlayer {
     rewind(event) {
         if (this.player.seekable && this.player.seekable.length) { // no seek if not (pre)loaded
             if (this.inRange(event)) {
-                this.player.currentTime = this.player.duration * this.getCoefficient(event);
+                const clipLength = this.playbackEndT - this.offsetT;
+                // eslint-disable-next-line max-len
+                this.player.currentTime = (clipLength * this.getCoefficient(event)) + this.offsetT;
+                this.updateProgress();
             }
         }
     }
@@ -402,9 +409,9 @@ class GreenAudioPlayer {
         }
     }
 
-    static formatTime(time) {
-        const min = Math.floor(time / 60);
-        const sec = Math.floor(time % 60);
+    formatTime(time) {
+        const min = Math.floor((time - this.offsetT) / 60);
+        const sec = Math.floor((time - this.offsetT) % 60);
         return `${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}`;
     }
 
@@ -441,8 +448,8 @@ class GreenAudioPlayer {
     }
 
     setCurrentTime(time) {
-        const pos = this.player.currentTime;
-        const end = Math.floor(this.player.duration);
+        const pos = this.player.currentTime - this.offsetT;
+        const end = Math.floor(this.playbackEndT);
         if (pos + time < 0 && pos === 0) {
             this.player.currentTime = this.player.currentTime;
         } else if (pos + time < 0) {
